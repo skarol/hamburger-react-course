@@ -4,7 +4,7 @@ import Burger from '../../Burger/Burger';
 import Button from '../../UI/Button/Button';
 import classes from './CheckoutSummary.css';
 
-const CheckoutSummary = props => {
+const checkoutSummary = props => {
   return (
     <div className={classes.CheckoutSummary}>
       <h1>Hope it tastes well!</h1>
@@ -21,4 +21,4 @@ const CheckoutSummary = props => {
   );
 };
 
-export default CheckoutSummary;
+export default checkoutSummary;

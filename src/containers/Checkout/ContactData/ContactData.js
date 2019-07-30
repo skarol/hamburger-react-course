@@ -8,12 +8,6 @@ import Input from '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
   state = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      postalCode: ''
-    },
     orderForm: {
       name: {
         type: 'input',
@@ -21,7 +15,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Your name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       street: {
         type: 'input',
@@ -29,7 +27,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       zipCode: {
         type: 'input',
@@ -37,7 +39,13 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'ZIP Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         type: 'input',
@@ -45,7 +53,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       email: {
         type: 'input',
@@ -53,7 +65,11 @@ class ContactData extends Component {
           type: 'email',
           placeholder: 'Your email'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       deliveryMethod: {
         type: 'select',
@@ -73,7 +89,7 @@ class ContactData extends Component {
     event.preventDefault();
     this.setState({ loading: true });
     const formData = {};
-    for(let key in this.state.orderForm) {
+    for (let key in this.state.orderForm) {
       formData[key] = this.state.orderForm[key].value;
     }
     const order = {
@@ -81,7 +97,7 @@ class ContactData extends Component {
       price: this.props.price,
       orderData: formData
     };
-    
+
     axios
       .post('/orders.json', order)
       .then(response => {
@@ -95,6 +111,23 @@ class ContactData extends Component {
       });
   };
 
+  checkValidity(value, rules) {
+    let isValid = true;
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    return isValid;
+  }
+
   inputChangedHandler = (event, inputId) => {
     const formData = {
       ...this.state.orderForm
@@ -103,6 +136,7 @@ class ContactData extends Component {
       ...formData[inputId]
     };
     element.value = event.target.value;
+    element.valid = this.checkValidity(element.value, element.validation);
     formData[inputId] = element;
     this.setState({ orderForm: formData });
   };
